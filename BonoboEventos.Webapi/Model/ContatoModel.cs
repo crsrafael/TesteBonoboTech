@@ -8,6 +8,6 @@ namespace Bonobo.Model
 
         public string Contato { get; set; }
 
-        public int ClientId { get; set; }
+        public int ConvidadoId { get; set; }
     }
 }

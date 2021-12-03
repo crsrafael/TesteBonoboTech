@@ -1,5 +1,6 @@
 using Bonobo.Model;
 using Bonobo.Repositorio;
+using BonoboEventos.Webapi.Repositorio;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +36,7 @@ namespace BonoboEventos.Webapi
 
             services.AddSingleton(new DatabaseConfig { ConnectionString = Configuration.GetConnectionString("DefaultConnection") });
             services.AddScoped<ConvidadoRepositorio>();
+            services.AddScoped<ContatoRepositorio>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
