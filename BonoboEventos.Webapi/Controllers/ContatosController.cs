@@ -54,7 +54,13 @@ namespace BonoboEventos.Webapi.Controllers
             var aviso = "";
             try
             {
-                 _repositorio.Altera(id, model);
+                var contato = _repositorio.SelecionaContato(id);
+
+                if(contato.Id == 0)
+                {
+                    return "Contato não encontrado!";
+                }
+                 _repositorio.Altera(model);
 
                  aviso = "Contato alterado com sucesso!";
             }
@@ -73,6 +79,13 @@ namespace BonoboEventos.Webapi.Controllers
 
             try
             {
+                var contato = _repositorio.SelecionaContato(id);
+
+                if(contato.Id == 0)
+                {
+                    return "Contato não encontrado!";
+                }
+
                 _repositorio.Apaga(id);
 
                  aviso = "Contato removido com sucesso!";

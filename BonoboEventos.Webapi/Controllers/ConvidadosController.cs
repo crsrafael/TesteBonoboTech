@@ -100,7 +100,16 @@ namespace BonoboEventos.Webapi.Controllers
             var aviso = "";
             try
             {
-                _repositorio.Altera(id, model); 
+                var convidado = _repositorio.SelecionaConvidados(id);
+
+                if(convidado.Id == 0)
+                {
+                    return "Contato não encontrado!";
+                }
+
+                _repositorio.Altera(model);
+
+                aviso = "Convidado alterado com sucesso!";
             }
             catch (System.Exception ex)
             {
@@ -117,6 +126,12 @@ namespace BonoboEventos.Webapi.Controllers
             var aviso = "";
             try
             {
+                var convidado = _repositorio.SelecionaConvidados(id);
+
+                if(convidado.Id == 0)
+                {
+                    return "Convidado não encontrado!";
+                }
                 _repositorio.Apaga(id);
                 aviso = "Convidado removido com sucesso!";
             }
