@@ -60,13 +60,13 @@ namespace Bonobo.Repositorio
             }
         }
 
-        public void Altera(ConvidadoModel convidado)
+        public void Altera(int id, ConvidadoModel convidado)
         {
             using (var conexao = new SqlConnection(_dbConfig.ConnectionString))
             {
                 var cmd = new SqlCommand("sp_altera_convidado", conexao);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Id", convidado.Id);
+                cmd.Parameters.AddWithValue("@Id", id);
                 cmd.Parameters.AddWithValue("@Nome", convidado.Nome);
                 cmd.Parameters.AddWithValue("@Apelido", convidado.Apelido);
                 cmd.Parameters.AddWithValue("@DataDeNascimento", convidado.DataDeNascimento);
@@ -107,6 +107,7 @@ namespace Bonobo.Repositorio
 
                 if (dr.Read())
                 {
+                    convidado.Id = Convert.ToInt32(dr["Id"]); // Preciso do ID para validar a alteração e a exclusão;
                     convidado.Apelido = dr["Apelido"].ToString();
                     convidado.DataDeNascimento = Convert.ToDateTime(dr["DataDeNascimento"]);
                     convidado.Nome = dr["Nome"].ToString();

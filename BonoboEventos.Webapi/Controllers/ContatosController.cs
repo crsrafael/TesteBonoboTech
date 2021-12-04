@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Data;
 using Bonobo.Model;
 using BonoboEventos.Webapi.Repositorio;
 using Microsoft.AspNetCore.Http;
@@ -60,7 +62,7 @@ namespace BonoboEventos.Webapi.Controllers
                 {
                     return "Contato não encontrado!";
                 }
-                 _repositorio.Altera(model);
+                 _repositorio.Altera(id, model);
 
                  aviso = "Contato alterado com sucesso!";
             }

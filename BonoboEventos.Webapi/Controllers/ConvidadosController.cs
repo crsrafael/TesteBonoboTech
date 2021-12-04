@@ -107,7 +107,7 @@ namespace BonoboEventos.Webapi.Controllers
                     return "Contato não encontrado!";
                 }
 
-                _repositorio.Altera(model);
+                _repositorio.Altera(id, model);
 
                 aviso = "Convidado alterado com sucesso!";
             }

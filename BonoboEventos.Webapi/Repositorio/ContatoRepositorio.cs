@@ -60,13 +60,13 @@ namespace BonoboEventos.Webapi.Repositorio
             }
         }
 
-        public void Altera(ContatoModel contato)
+        public void Altera(int id, ContatoModel contato)
         {
             using (var conexao = new SqlConnection(_dbConfig.ConnectionString))
             {
                 var cmd = new SqlCommand("sp_altera_contato", conexao);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Id", contato.Id);
+                cmd.Parameters.AddWithValue("@Id", id);
                 cmd.Parameters.AddWithValue(@"Tipo", contato.Tipo);
                 cmd.Parameters.AddWithValue(@"Contato", contato.Contato);
                 cmd.Parameters.AddWithValue(@"ConvidadoId", contato.ConvidadoId);
@@ -107,6 +107,7 @@ namespace BonoboEventos.Webapi.Repositorio
 
                 if (dr.Read())
                 {
+                    contato.Id = Convert.ToInt32(dr["Id"]); // Preciso do ID para validar a alteração e a exclusão;
                     contato.Tipo = dr["Tipo"].ToString();
                     contato.Contato = dr["Contato"].ToString();
                     contato.ConvidadoId = Convert.ToInt32(dr["ConvidadoId"]);
@@ -114,6 +115,21 @@ namespace BonoboEventos.Webapi.Repositorio
 
                 return contato;
             }
+        }
+
+        public DataTable SelecionaContatosDoConvidado(int convidadoId)
+        {
+            var da = new SqlDataAdapter();
+            var dt = new DataTable();
+            using(var conexao = new SqlConnection(_dbConfig.ConnectionString))
+            {
+                da.SelectCommand = new SqlCommand("sp_seleciona_contato_convidado", conexao);
+                da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                da.SelectCommand.Parameters.AddWithValue("@ConvidadoId", convidadoId);
+                da.Fill(dt);
+            }
+
+            return dt;
         }
     }
 }
