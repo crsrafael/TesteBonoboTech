@@ -60,7 +60,7 @@ namespace BonoboEventos.Webapi.Repositorio
             }
         }
 
-        public void Altera(int id, ContatoModel contato)
+        public void Altera(ContatoModel contato)
         {
             using (var conexao = new SqlConnection(_dbConfig.ConnectionString))
             {
