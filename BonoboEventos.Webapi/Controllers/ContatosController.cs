@@ -1,5 +1,6 @@
 using Bonobo.Model;
 using BonoboEventos.Webapi.Repositorio;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BonoboEventos.Webapi.Controllers
@@ -18,25 +19,68 @@ namespace BonoboEventos.Webapi.Controllers
         [HttpGet("{id}")]
         public ContatoModel Get(int id)
         {
-            return _repositorio.SelecionaContato(id);
+            try
+            {
+                 return _repositorio.SelecionaContato(id);
+            }
+            catch (System.Exception ex)
+            {
+                throw new System.Exception($"Erro ao localizar os contatos. {ex.Message}");
+            }
         }
 
         [HttpPost]
-        public bool Post(ContatoModel model)
+        public string Post(ContatoModel model)
         {
-            return _repositorio.Insere(model);
+            var aviso = "";
+
+            try
+            {
+                _repositorio.Insere(model);
+                aviso = "Contato inserido com sucesso!";
+            }
+            catch (System.Exception ex)
+            {
+                aviso = ex.Message;
+            }
+
+            return aviso;
+            
         }
 
         [HttpPut("{id}")]
-        public bool Put(int id, ContatoModel model)
+        public string Put(int id, ContatoModel model)
         {
-            return _repositorio.Altera(id, model);
+            var aviso = "";
+            try
+            {
+                 _repositorio.Altera(id, model);
+            }
+            catch (System.Exception ex)
+            {
+                aviso = ex.Message;
+            }
+
+            return aviso;
         }
 
         [HttpDelete("{id}")]
-        public bool Delete(int id)
+        public string Delete(int id)
         {
-            return _repositorio.Apaga(id);
+            string aviso = "";
+
+            try
+            {
+                _repositorio.Apaga(id);
+
+                 aviso = "Contato removido com sucesso!";
+            }
+            catch (System.Exception ex)
+            {
+                aviso = ex.Message;
+            }
+
+            return aviso;
         }
     }
 }

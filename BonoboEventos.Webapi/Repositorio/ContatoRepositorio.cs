@@ -14,7 +14,7 @@ namespace BonoboEventos.Webapi.Repositorio
             _dbConfig = dbConfig;
         }
 
-        public bool Insere(ContatoModel contato)
+        public void Insere(ContatoModel contato)
         {
             using(var conexao = new SqlConnection(_dbConfig.ConnectionString))
             {
@@ -32,7 +32,7 @@ namespace BonoboEventos.Webapi.Repositorio
             }
         }
 
-        public bool Altera(int id, ContatoModel contato)
+        public void Altera(int id, ContatoModel contato)
         {
             using (var conexao = new SqlConnection(_dbConfig.ConnectionString))
             {
@@ -53,7 +53,7 @@ namespace BonoboEventos.Webapi.Repositorio
             }
         }
 
-        public bool Apaga(int id)
+        public void Apaga(int id)
         {
             using (var conexao = new SqlConnection(_dbConfig.ConnectionString))
             {

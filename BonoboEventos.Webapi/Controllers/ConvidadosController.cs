@@ -50,41 +50,82 @@ namespace BonoboEventos.Webapi.Controllers
         [HttpGet("Busca/{pesquisa}")]
         public List<ConvidadoModel> Get(string pesquisa)
         {
-            var dtConvidados = _repositorio.SelecionaConvidados(pesquisa);
-
             var listaConvidados = new List<ConvidadoModel>();
 
-            foreach (DataRow linha in dtConvidados.Rows)
+            try
             {
-                var convidado = new ConvidadoModel
+                var dtConvidados = _repositorio.SelecionaConvidados(pesquisa);
+
+                foreach (DataRow linha in dtConvidados.Rows)
                 {
-                    Apelido = linha["Apelido"].ToString(),
-                    DataDeNascimento = Convert.ToDateTime(linha["DataDeNascimento"]),
-                    Nome = linha["Nome"].ToString()
-                };
+                    var convidado = new ConvidadoModel
+                    {
+                        Apelido = linha["Apelido"].ToString(),
+                        DataDeNascimento = Convert.ToDateTime(linha["DataDeNascimento"]),
+                        Nome = linha["Nome"].ToString()
+                    };
 
-                listaConvidados.Add(convidado);
+                    listaConvidados.Add(convidado);
+                }
+
+                return listaConvidados; 
             }
-
-            return listaConvidados;
+            catch (System.Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         [HttpPost]
-        public bool Post(ConvidadoModel model)
+        public string Post(ConvidadoModel model)
         {
-            return _repositorio.Insere(model);
+            var aviso = "";
+            try
+            {
+                 _repositorio.Insere(model);
+                 aviso = "Convidado inserido com sucesso";
+            }
+            catch (System.Exception ex)
+            {
+                aviso = ex.Message;
+            }
+
+            return aviso;
+            
         }
 
         [HttpPut("{id}")]
-        public bool Put(int id, ConvidadoModel model)
+        public string Put(int id, ConvidadoModel model)
         {
-            return _repositorio.Altera(id, model);
+            var aviso = "";
+            try
+            {
+                _repositorio.Altera(id, model); 
+            }
+            catch (System.Exception ex)
+            {
+                aviso = ex.Message;
+            }
+
+            return aviso;
+            
         }
 
         [HttpDelete("{id}")]
-        public bool Delete(int id)
+        public string Delete(int id)
         {
-            return _repositorio.Apaga(id);
+            var aviso = "";
+            try
+            {
+                _repositorio.Apaga(id);
+                aviso = "Convidado removido com sucesso!";
+            }
+            catch (System.Exception ex)
+            {
+                aviso = ex.Message;
+            }
+
+            return aviso;
         }
     }
 }

@@ -15,58 +15,79 @@ namespace Bonobo.Repositorio
             _dbConfig = dbConfig;
         }
 
-        public bool Insere(ConvidadoModel convidado)
+        public void Insere(ConvidadoModel convidado)
         {
+            var convidadoExiste = ConvidadoExiste(convidado.Nome);
+
+            if(convidadoExiste)
+            {
+                throw new Exception("Convidado já está cadastrado");
+            }
+
             using (var conexao = new SqlConnection(_dbConfig.ConnectionString))
             {
                 var cmd = new SqlCommand("sp_insere_convidado", conexao);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue(@"Nome", convidado.Nome);
-                cmd.Parameters.AddWithValue(@"Apelido", convidado.Apelido);
-                cmd.Parameters.AddWithValue(@"DataDeNascimento", convidado.DataDeNascimento);
+                cmd.Parameters.AddWithValue("@Nome", convidado.Nome);
+                cmd.Parameters.AddWithValue("@Apelido", convidado.Apelido);
+                cmd.Parameters.AddWithValue("@DataDeNascimento", convidado.DataDeNascimento);
 
                 conexao.Open();
 
                 cmd.ExecuteNonQuery();
-
-                return true;
-
             }
         }
 
-        public bool Altera(int id, ConvidadoModel convidado)
+        private bool ConvidadoExiste(string nome)
+        {
+            using (var conexao = new SqlConnection(_dbConfig.ConnectionString))
+            {
+                var sql = "Select Id From Convidados Where Nome = @nome";
+                var cmd = new SqlCommand(sql, conexao);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@nome", nome);
+
+                conexao.Open();
+
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                if(dr.Read())
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public void Altera(int id, ConvidadoModel convidado)
         {
             using (var conexao = new SqlConnection(_dbConfig.ConnectionString))
             {
                 var cmd = new SqlCommand("sp_altera_convidado", conexao);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Id", id);
-                cmd.Parameters.AddWithValue(@"Nome", convidado.Nome);
-                cmd.Parameters.AddWithValue(@"Apelido", convidado.Apelido);
-                cmd.Parameters.AddWithValue(@"DataDeNascimento", convidado.DataDeNascimento);
+                cmd.Parameters.AddWithValue("@Nome", convidado.Nome);
+                cmd.Parameters.AddWithValue("@Apelido", convidado.Apelido);
+                cmd.Parameters.AddWithValue("@DataDeNascimento", convidado.DataDeNascimento);
 
                 conexao.Open();
 
                 cmd.ExecuteNonQuery();
-
-                return true;
-
             }
         }
 
-        public bool Apaga(int id)
+        public void Apaga(int id)
         {
             using (var conexao = new SqlConnection(_dbConfig.ConnectionString))
             {
                 var cmd = new SqlCommand("sp_remove_convidado", conexao);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue(@"Id", id);
+                cmd.Parameters.AddWithValue("@Id", id);
 
                 conexao.Open();
 
                 cmd.ExecuteNonQuery();
-
-                return true;
             }
         }
 
