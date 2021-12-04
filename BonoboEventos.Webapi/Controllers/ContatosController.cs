@@ -55,6 +55,8 @@ namespace BonoboEventos.Webapi.Controllers
             try
             {
                  _repositorio.Altera(id, model);
+
+                 aviso = "Contato alterado com sucesso!";
             }
             catch (System.Exception ex)
             {

@@ -16,6 +16,13 @@ namespace BonoboEventos.Webapi.Repositorio
 
         public void Insere(ContatoModel contato)
         {
+            var contatoExiste = ContatoExiste(contato);
+
+            if(contatoExiste)
+            {
+                throw new Exception("Contato já está cadastrado.");
+            }
+
             using(var conexao = new SqlConnection(_dbConfig.ConnectionString))
             {
                 var cmd = new SqlCommand("sp_insere_contato", conexao);
@@ -26,9 +33,30 @@ namespace BonoboEventos.Webapi.Repositorio
 
                 conexao.Open();
 
-                cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery(); 
+            }
+        }
 
-                return true; 
+        private bool ContatoExiste(ContatoModel contato)
+        {
+            using(var conexao = new SqlConnection(_dbConfig.ConnectionString))
+            {
+                var sql = "Select Id From Contatos where tipo = @tipo and contato = @contato";
+                var cmd = new SqlCommand(sql, conexao);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@tipo", contato.Tipo);
+                cmd.Parameters.AddWithValue("@contato", contato.Contato);
+                
+                conexao.Open();
+
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                if(dr.Read())
+                {
+                    return true;
+                }
+
+                return false;
             }
         }
 
@@ -43,13 +71,9 @@ namespace BonoboEventos.Webapi.Repositorio
                 cmd.Parameters.AddWithValue(@"Contato", contato.Contato);
                 cmd.Parameters.AddWithValue(@"ConvidadoId", contato.ConvidadoId);
 
-
                 conexao.Open();
 
                 cmd.ExecuteNonQuery();
-
-                return true;
-
             }
         }
 
@@ -64,8 +88,6 @@ namespace BonoboEventos.Webapi.Repositorio
                 conexao.Open();
 
                 cmd.ExecuteNonQuery();
-
-                return true;
             }
         }
 
